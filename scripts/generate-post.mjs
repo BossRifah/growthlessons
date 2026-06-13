@@ -165,6 +165,21 @@ function buildPrompt(research, recentTitles) {
 
   return `${workflow}
 
+## Automation mode (overrides the brief where they conflict)
+You are running unattended on a schedule. You do NOT have SERP screenshots,
+AI-overview screenshots, Semrush data, or specific competitor URLs, so do not
+ask for them and do not stop. Treat the research material below as your source
+and competitor signal. Do the analysis steps (intent, entity map, question map,
+outline) internally as your own reasoning; do NOT print the coverage table, the
+outline, the meta block, or the quality-check report. Your visible output is the
+finished blog post only.
+Hard requirements that still apply: one question per section with a standalone
+opening answer; sentence-case headings (the H1/title may use title case); no em
+dashes; follow every rule in the tone and style section. Do NOT invent statistics
+or attach numbers to named sources you cannot verify, and never use "[verify]" or
+placeholder citations: if you are not confident a stat is real, write the point
+without a number. Put the FAQ at the end of the content as a "## FAQ" section.
+
 ## Research material (recent items from my sources — use as background; pick your own angle)
 ${researchBlock}
 
@@ -173,7 +188,9 @@ ${recent}
 
 ## Output
 Respond with ONLY a valid JSON object (no markdown fences) in exactly this shape:
-{"title": "...", "excerpt": "one-sentence summary, max 160 chars", "content": "full post body in markdown"}`;
+{"title": "...", "excerpt": "one-sentence summary, max 160 chars", "content": "full post body in markdown"}
+"content" is the full post in markdown (intro, body sections, and FAQ). Do not
+include the title as an H1 inside content; the site renders the title separately.`;
 }
 
 // -------------------------------------------------------------------- providers
