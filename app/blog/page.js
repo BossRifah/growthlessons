@@ -1,7 +1,6 @@
-import Link from "next/link";
-import { supabase } from "@/lib/supabase";
+import { getPublishedPosts } from "@/lib/posts";
+import PostCard from "@/components/PostCard";
 
-// Always fetch fresh data so new posts show up without a rebuild.
 export const dynamic = "force-dynamic";
 
 export const metadata = {
@@ -9,58 +8,40 @@ export const metadata = {
   description: "Read the latest posts.",
 };
 
-function formatDate(value) {
-  if (!value) return "";
-  return new Date(value).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
 export default async function BlogPage() {
-  const { data: posts, error } = await supabase
-    .from("posts")
-    .select("id, title, slug, excerpt, published_at, created_at")
-    .eq("published", true)
-    .order("published_at", { ascending: false });
-
-  if (error) {
-    return (
-      <section>
-        <h1>Blog</h1>
-        <div className="empty">
-          Couldn&apos;t load posts: {error.message}
-        </div>
-      </section>
-    );
-  }
+  const { posts, error } = await getPublishedPosts();
 
   return (
-    <section>
-      <h1>Blog</h1>
-
-      {!posts || posts.length === 0 ? (
-        <div className="empty">
-          No published posts yet. Add one in your Supabase{" "}
-          <strong>Table Editor → posts</strong> (set <code>published</code> to
-          true), and it will appear here.
+    <>
+      <section className="page-head">
+        <div className="container">
+          <p className="eyebrow">The blog</p>
+          <h1>
+            Lessons worth <em className="accent-purple">giving a hoot</em> about
+          </h1>
+          <p>Practical writing on growth, habits, and ideas that compound.</p>
         </div>
-      ) : (
-        <ul className="post-list">
-          {posts.map((post) => (
-            <li key={post.id}>
-              <p className="post-meta">
-                {formatDate(post.published_at || post.created_at)}
-              </p>
-              <h2>
-                <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-              </h2>
-              {post.excerpt && <p className="post-excerpt">{post.excerpt}</p>}
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
+      </section>
+
+      <section className="section" style={{ paddingTop: 40 }}>
+        <div className="container">
+          {error ? (
+            <div className="empty">Couldn&apos;t load posts: {error.message}</div>
+          ) : posts.length === 0 ? (
+            <div className="empty">
+              No published posts yet. Add one in your Supabase{" "}
+              <strong>Table Editor → posts</strong> (set <code>published</code>{" "}
+              to true) and it will appear here.
+            </div>
+          ) : (
+            <div className="card-grid">
+              {posts.map((post) => (
+                <PostCard key={post.id} post={post} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+    </>
   );
 }
