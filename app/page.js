@@ -19,57 +19,56 @@ export default async function HomePage() {
             Lessons for <em>compounding</em> growth
           </h1>
           <p>
-            Practical writing on growth, habits, and the small lessons that
-            stack up over time. <span className="accent">[your tagline]</span>
+            I&apos;m Rifah — a content-led growth marketer with 6+ years scaling
+            B2B startups. I share the content, SEO, and growth lessons that moved
+            real numbers, so you can move yours.
           </p>
           <Link href="/blog" className="btn btn-purple">
-            Read the blog <ChatIcon />
+            Read the lessons <ChatIcon />
           </Link>
         </div>
       </section>
 
-      {/* ---------------- Logo strip ---------------- */}
+      {/* ---------------- Credibility strip ---------------- */}
       <div className="logo-strip">
         <div className="container">
-          <span className="logo-chip">As seen in</span>
-          <span className="logo-chip">Logo</span>
-          <span className="logo-chip">Logo</span>
-          <span className="logo-chip">Logo</span>
-          <span className="logo-chip">Logo</span>
-          <span className="logo-chip">Logo</span>
+          <span className="logo-chip">6+ years experience</span>
+          <span className="logo-chip">2 YC startups</span>
+          <span className="logo-chip">B2B SaaS growth</span>
+          <span className="logo-chip">SEO · Content · GEO</span>
         </div>
       </div>
 
-      {/* ---------------- Value prop ---------------- */}
+      {/* ---------------- Value prop + stats ---------------- */}
       <section className="section">
         <div className="container">
           <div className="section-head">
             <h2>
-              Writing <em className="accent-purple">so good</em> it doesn&apos;t
-              feel like reading homework
+              Real results, <em className="accent-purple">shared openly</em>
             </h2>
             <p>
-              Every post is built to be useful, honest, and worth your time —
-              short on fluff, long on real lessons. [Replace with your copy.]
+              No theory, no fluff. Everything here comes from work that moved the
+              needle at YC-backed B2B startups — and it&apos;s all yours to learn
+              from.
             </p>
           </div>
 
           <div className="stat-grid">
             <div className="stat-card bg-purple">
-              <span className="label">Readers</span>
-              <span className="big">10k+ monthly</span>
+              <span className="label">Organic traffic</span>
+              <span className="big">2.5× in 7 months</span>
             </div>
             <div className="stat-card bg-blue">
-              <span className="label">Published</span>
-              <span className="big">A new post every week</span>
+              <span className="label">LLM visibility</span>
+              <span className="big">+30% in 6 months</span>
             </div>
             <div className="stat-card bg-orange">
-              <span className="label">Avg. read</span>
-              <span className="big">5 min, no fluff</span>
+              <span className="label">Impressions</span>
+              <span className="big">4× under 8 months</span>
             </div>
             <div className="stat-card bg-green">
-              <span className="label">Cost</span>
-              <span className="big">Always free</span>
+              <span className="label">Content-led leads</span>
+              <span className="big">+16%</span>
             </div>
           </div>
         </div>
@@ -80,25 +79,29 @@ export default async function HomePage() {
         <div className="container">
           <div className="section-head">
             <h2>Growth is evolving</h2>
+            <p>
+              Search isn&apos;t just Google anymore. Here&apos;s the shift this
+              blog is built around.
+            </p>
           </div>
           <div className="compare">
             <div className="compare-card">
               <h3>The old way</h3>
               <ul>
-                <li>Generic advice that fits no one</li>
-                <li>Hype with no follow-through</li>
-                <li>Content written to fill a calendar</li>
-                <li>Lessons you forget by lunch</li>
+                <li>Chasing tactics with no system</li>
+                <li>Guessing what Google (and AI) wants</li>
+                <li>Publishing content nobody reads</li>
+                <li>Random wins you can&apos;t repeat</li>
               </ul>
             </div>
             <div className="vs">vs.</div>
             <div className="compare-card good">
-              <h3>The Growth Lessons way</h3>
+              <h3>The content-led way</h3>
               <ul>
-                <li>Specific, tested takeaways</li>
-                <li>Honest stories, wins and misses</li>
-                <li>Written because it matters</li>
-                <li>Ideas that actually stick</li>
+                <li>A repeatable, compounding system</li>
+                <li>SEO + LLM visibility, done right</li>
+                <li>Content built to rank and convert</li>
+                <li>Results you can actually copy</li>
               </ul>
             </div>
           </div>
@@ -110,14 +113,17 @@ export default async function HomePage() {
         <div className="container">
           <div className="section-head">
             <h2>What can you expect?</h2>
-            <p>A simple rhythm you can count on. [Replace with your copy.]</p>
+            <p>
+              Whether you&apos;re a total beginner or leveling up, here&apos;s
+              what you&apos;ll walk away with.
+            </p>
           </div>
           <div className="steps-grid">
             {[
-              ["1", "Real context", "Lessons grounded in what actually happened, not theory."],
-              ["2", "A clear idea", "One takeaway per post, explained simply."],
-              ["3", "Useful detail", "Enough specifics that you can act on it today."],
-              ["4", "Honest results", "What worked, what didn't, and why."],
+              ["1", "Real lessons", "Tactics pulled from actual campaigns, not recycled theory."],
+              ["2", "Content & SEO", "How to rank in Google and show up in AI answers."],
+              ["3", "Growth systems", "Repeatable playbooks built for B2B startups."],
+              ["4", "Beginner → specialist", "Grow into a focused SEO, content, or growth pro."],
             ].map(([num, title, body]) => (
               <div className="step" key={num}>
                 <span className="num">{num}</span>
@@ -133,7 +139,7 @@ export default async function HomePage() {
       <section className="section" style={{ background: "#fff" }}>
         <div className="container">
           <div className="section-head">
-            <h2>Lessons worth giving a hoot about</h2>
+            <h2>Latest growth lessons</h2>
           </div>
 
           {posts.length === 0 ? (
@@ -151,7 +157,7 @@ export default async function HomePage() {
               </div>
               <div style={{ textAlign: "center", marginTop: 36 }}>
                 <Link href="/blog" className="btn btn-outline">
-                  See all posts
+                  See all lessons
                 </Link>
               </div>
             </>
@@ -164,17 +170,19 @@ export default async function HomePage() {
         <div className="container">
           <div className="cta">
             <div>
-              <h2>Quit horsin&apos; around — let&apos;s talk</h2>
+              <h2>
+                Let&apos;s talk <em>growth</em>
+              </h2>
               <p>
-                Got a question, an idea, or a lesson to share? Drop a note and
-                I&apos;ll get back to you. [Replace with your copy.]
+                Got a question about SEO, content, or scaling a B2B startup? Or a
+                lesson of your own to share? Send it over — I read everything.
               </p>
             </div>
             <form className="cta-form" action="#">
               <label htmlFor="email">Email address</label>
               <input id="email" type="email" placeholder="you@example.com" />
-              <label htmlFor="msg">Anything you&apos;d like to add?</label>
-              <textarea id="msg" rows={3} placeholder="How can I help?" />
+              <label htmlFor="msg">What&apos;s on your mind?</label>
+              <textarea id="msg" rows={3} placeholder="Ask me anything growth…" />
               <div style={{ marginTop: 16 }}>
                 <button type="submit" className="btn btn-light">
                   Send it over

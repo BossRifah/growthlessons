@@ -3,9 +3,11 @@ import Link from "next/link";
 import { ChatIcon } from "@/components/Doodles";
 
 export const metadata = {
-  title: "Growth Lessons — Lessons for compounding growth",
+  title: "Growth Lessons by Rifah — content-led growth marketing",
   description:
-    "A blog about growth, lessons, and ideas worth compounding on.",
+    "Marketing, content, and SEO lessons from a content-led growth marketer " +
+    "with 6+ years scaling B2B startups. Learn to grow traffic, LLM " +
+    "visibility, and leads.",
 };
 
 export default function RootLayout({ children }) {
@@ -63,9 +65,10 @@ export default function RootLayout({ children }) {
             </div>
             <div className="footer-col">
               <h4>Topics</h4>
+              <Link href="/blog">SEO</Link>
+              <Link href="/blog">Content marketing</Link>
               <Link href="/blog">Growth</Link>
-              <Link href="/blog">Lessons</Link>
-              <Link href="/blog">Ideas</Link>
+              <Link href="/blog">LLM visibility</Link>
             </div>
             <div className="footer-col">
               <h4>Company</h4>

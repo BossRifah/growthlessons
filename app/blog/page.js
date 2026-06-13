@@ -17,9 +17,12 @@ export default async function BlogPage() {
         <div className="container">
           <p className="eyebrow">The blog</p>
           <h1>
-            Lessons worth <em className="accent-purple">giving a hoot</em> about
+            Growth lessons, <em className="accent-purple">shared openly</em>
           </h1>
-          <p>Practical writing on growth, habits, and ideas that compound.</p>
+          <p>
+            Practical writing on content, SEO, and B2B growth — the playbooks
+            behind 2.5× traffic, 4× impressions, and more.
+          </p>
         </div>
       </section>
 
