@@ -173,6 +173,9 @@ and competitor signal. Do the analysis steps (intent, entity map, question map,
 outline) internally as your own reasoning; do NOT print the coverage table, the
 outline, the meta block, or the quality-check report. Your visible output is the
 finished blog post only.
+Length: the post must be between 1500 and 4500 words. Aim for genuine depth in
+that range, not padding: cover the topic thoroughly with real sections, examples,
+and a FAQ, and stop when it is complete rather than stretching to hit a number.
 Hard requirements that still apply: one question per section with a standalone
 opening answer; sentence-case headings (the H1/title may use title case); no em
 dashes; follow every rule in the tone and style section. Do NOT invent statistics
@@ -212,7 +215,8 @@ async function callGemini(prompt) {
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: {
         temperature: 0.85,
-        maxOutputTokens: 4096,
+        // ~8k tokens leaves room for a 4500-word post plus the JSON wrapper.
+        maxOutputTokens: 8192,
         responseMimeType: "application/json",
       },
     }),
@@ -235,6 +239,7 @@ async function callGroq(prompt) {
     body: JSON.stringify({
       model: "llama-3.3-70b-versatile",
       temperature: 0.85,
+      max_tokens: 8192,
       response_format: { type: "json_object" },
       messages: [
         { role: "system", content: SYSTEM },
