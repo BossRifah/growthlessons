@@ -115,9 +115,20 @@ async function fromUrl(src) {
   ];
 }
 
+// Shuffle so a long source list rotates over time instead of the writer only
+// ever reading the first few feeds before hitting maxTotalItems.
+function shuffled(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 async function fetchResearch(cfg) {
   const items = [];
-  for (const src of cfg.sources || []) {
+  for (const src of shuffled(cfg.sources || [])) {
     if (items.length >= cfg.maxTotalItems) break;
     try {
       let got;
