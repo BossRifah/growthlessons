@@ -1,0 +1,32 @@
+name: Daily blog post
+
+# Generates and publishes one blog post automatically.
+on:
+  schedule:
+    # 06:00 UTC every day. Change this to your local morning.
+    # (e.g. "0 13 * * *" = 6am US Pacific, "0 1 * * *" = 6am Bangladesh.)
+    - cron: "0 6 * * *"
+  workflow_dispatch: {} # lets you run it on demand from the Actions tab
+
+# Don't let two runs overlap.
+concurrency:
+  group: daily-post
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - name: Generate and publish a post
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          AUTHOR_ID: ${{ secrets.AUTHOR_ID }}
+        run: npm run generate

@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { getPostBySlug, formatDate } from "@/lib/posts";
 
 export const dynamic = "force-dynamic";
@@ -43,7 +45,11 @@ export default async function PostPage({ params }) {
           <img className="cover" src={post.cover_url} alt={post.title} />
         )}
 
-        <div className="post-content">{post.content}</div>
+        <div className="post-content">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {post.content}
+          </ReactMarkdown>
+        </div>
       </article>
     </div>
   );

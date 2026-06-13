@@ -73,6 +73,47 @@ The easiest way (no code needed):
 
 ---
 
+## 6. Daily auto-publishing (optional)
+
+A GitHub Action writes and publishes one post every morning using **Gemini**
+(free) with **Groq** (free) as a fallback. See
+[`scripts/generate-post.mjs`](./scripts/generate-post.mjs) and
+[`.github/workflows/daily-post.yml`](./.github/workflows/daily-post.yml).
+
+**One-time setup:**
+
+1. **Enable empty authors** — run [`supabase/automation.sql`](./supabase/automation.sql)
+   in the Supabase SQL Editor (makes `posts.author_id` optional).
+2. **Get free API keys:**
+   - Gemini: <https://aistudio.google.com/apikey>
+   - Groq (fallback — this is Groq, *not* xAI's Grok): <https://console.groq.com/keys>
+3. **Get your Supabase service_role key** — Supabase → Settings → API →
+   `service_role`. This is a **secret**; it only goes in GitHub Secrets, never
+   in code or the browser.
+4. **Add GitHub repo secrets** — repo → Settings → Secrets and variables →
+   Actions → New repository secret:
+   - `SUPABASE_URL`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `GEMINI_API_KEY`
+   - `GROQ_API_KEY`
+   - `AUTHOR_ID` *(optional)*
+5. **Set the time** — edit the `cron` line in `daily-post.yml` to your local
+   morning (it's in UTC).
+
+**Test it now:** repo → **Actions → Daily blog post → Run workflow**. A new
+post should appear on `/blog` within a minute.
+
+**Run it locally:**
+
+```bash
+cp .env.automation.example .env.automation   # fill in the values
+node --env-file=.env.automation scripts/generate-post.mjs
+```
+
+> Set `PUBLISH=false` to generate drafts instead of publishing live.
+
+---
+
 ## Tech
 
 - [Next.js](https://nextjs.org) (App Router)
