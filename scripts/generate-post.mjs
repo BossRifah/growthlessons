@@ -195,10 +195,15 @@ async function main() {
     slug,
     excerpt: (post.excerpt || "").trim().slice(0, 200),
     content: post.content.trim(),
-    author_id: await resolveAuthor(),
     published: publish,
     published_at: publish ? new Date().toISOString() : null,
   };
+
+  // Only set author_id when we actually have one. Sending an explicit null
+  // makes PostgREST require the column to exist; omitting it lets the post
+  // publish with no author (the website doesn't use author_id).
+  const authorId = await resolveAuthor();
+  if (authorId) row.author_id = authorId;
 
   const { data, error } = await supabase
     .from("posts")
