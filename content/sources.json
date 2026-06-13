@@ -1,0 +1,12 @@
+{
+  "_comment": "Sources the daily writer reads each morning for fresh material. Edit this list freely. type 'rss' = parse a feed (best); type 'url' = fetch a page and extract text. itemsPerSource caps how many recent items are pulled from each feed.",
+  "itemsPerSource": 3,
+  "maxTotalItems": 12,
+  "sources": [
+    { "name": "Ahrefs Blog", "type": "rss", "url": "https://ahrefs.com/blog/feed/" },
+    { "name": "Backlinko", "type": "rss", "url": "https://backlinko.com/feed" },
+    { "name": "Search Engine Land", "type": "rss", "url": "https://searchengineland.com/feed" },
+    { "name": "Animalz Blog", "type": "rss", "url": "https://www.animalz.co/blog/rss.xml" },
+    { "name": "Lenny's Newsletter", "type": "rss", "url": "https://www.lennysnewsletter.com/feed" }
+  ]
+}

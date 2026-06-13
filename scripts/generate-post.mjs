@@ -1,21 +1,23 @@
-// Daily blog post generator.
+// Daily blog post generator (source-grounded).
 //
-// Flow: read recent post titles (to avoid repeats) -> ask Gemini to write a
-// fresh post (falls back to Groq if Gemini fails) -> insert it into Supabase.
+// Flow each morning:
+//   1. Load your brief (content/workflow.md) and sources (content/sources.json)
+//   2. Fetch fresh material from your sources (RSS, falling back to raw URL)
+//   3. Read recent post titles (to avoid repeats)
+//   4. Ask Gemini to write a post that follows your brief and uses the material
+//      (falls back to Groq if Gemini fails or is rate-limited)
+//   5. Insert it into Supabase
 //
-// Runs from GitHub Actions (see .github/workflows/daily-post.yml) or locally:
+// Run from GitHub Actions (.github/workflows/daily-post.yml) or locally:
 //   node --env-file=.env.automation scripts/generate-post.mjs
 //
-// Required env:
-//   SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_URL)
-//   SUPABASE_SERVICE_ROLE_KEY   <- secret, server-only, bypasses RLS to insert
-//   GEMINI_API_KEY              <- primary writer (free tier)
-// Optional env:
-//   GROQ_API_KEY                <- free fallback writer (Groq, not xAI's Grok)
-//   AUTHOR_ID                   <- a profiles.id to attribute posts to
-//   PUBLISH                     <- "false" to save as draft instead of publishing
+// Required env: SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_URL),
+//   SUPABASE_SERVICE_ROLE_KEY, and at least one of GEMINI_API_KEY / GROQ_API_KEY.
+// Optional env: AUTHOR_ID, PUBLISH ("false" = save draft instead of publishing).
 
+import { readFileSync } from "fs";
 import { createClient } from "@supabase/supabase-js";
+import Parser from "rss-parser";
 
 const {
   SUPABASE_URL,
@@ -43,41 +45,127 @@ const supabase = createClient(supabaseUrl, SUPABASE_SERVICE_ROLE_KEY, {
   auth: { persistSession: false },
 });
 
-const SYSTEM = `You are Rifah, a content-led growth marketer with 6+ years scaling B2B SaaS startups (including two YC companies). You write practical, no-fluff lessons on SEO, content marketing, LLM/AI visibility (GEO), and B2B growth. Your readers are beginner-to-intermediate marketers who want to become specialized SEO, content, or growth professionals. Voice: clear, direct, experienced, and encouraging. Teach with concrete steps and examples.`;
+const UA = "growthlessons-bot/1.0 (+https://github.com/BossRifah/growthlessons)";
+const SYSTEM =
+  "You write blog posts by strictly following the provided brief, and you reply with ONLY the requested JSON object.";
 
-function buildPrompt(recentTitles) {
+// ---------------------------------------------------------------- config files
+function loadText(rel, fallback = "") {
+  try {
+    return readFileSync(new URL(rel, import.meta.url), "utf8");
+  } catch {
+    return fallback;
+  }
+}
+
+const workflow = loadText(
+  "../content/workflow.md",
+  "Write a practical, honest blog post on content marketing, SEO, or B2B growth for beginner marketers. 700-1000 words, Markdown, no invented stats."
+);
+
+let sourcesCfg = { sources: [], itemsPerSource: 3, maxTotalItems: 12 };
+try {
+  sourcesCfg = { ...sourcesCfg, ...JSON.parse(loadText("../content/sources.json", "{}")) };
+} catch (e) {
+  console.warn("Could not parse content/sources.json: " + e.message);
+}
+
+// --------------------------------------------------------------------- research
+const rss = new Parser({ timeout: 9000, headers: { "User-Agent": UA } });
+
+function htmlToText(html) {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&[a-z]+;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+async function fetchWithTimeout(url, ms = 9000) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), ms);
+  try {
+    return await fetch(url, { signal: ctrl.signal, headers: { "User-Agent": UA } });
+  } finally {
+    clearTimeout(t);
+  }
+}
+
+async function fromRss(src, n) {
+  const feed = await rss.parseURL(src.url);
+  return (feed.items || []).slice(0, n).map((it) => ({
+    source: src.name,
+    title: (it.title || "").trim(),
+    snippet: htmlToText(it.contentSnippet || it.content || it.summary || "").slice(0, 240),
+  }));
+}
+
+async function fromUrl(src) {
+  const res = await fetchWithTimeout(src.url);
+  const html = await res.text();
+  const m = html.match(/<title[^>]*>([^<]*)<\/title>/i);
+  return [
+    {
+      source: src.name,
+      title: m ? m[1].trim() : src.name,
+      snippet: htmlToText(html).slice(0, 1000),
+    },
+  ];
+}
+
+async function fetchResearch(cfg) {
+  const items = [];
+  for (const src of cfg.sources || []) {
+    if (items.length >= cfg.maxTotalItems) break;
+    try {
+      let got;
+      if (src.type === "url") {
+        got = await fromUrl(src);
+      } else {
+        try {
+          got = await fromRss(src, cfg.itemsPerSource);
+        } catch (e) {
+          // "Both": if the RSS parse fails, fall back to fetching the raw page.
+          console.warn(`  ⚠ ${src.name} RSS failed (${e.message}); trying raw URL`);
+          got = await fromUrl(src);
+        }
+      }
+      items.push(...got);
+      console.log(`  ✓ ${src.name}: ${got.length} item(s)`);
+    } catch (e) {
+      console.warn(`  ⚠ ${src.name} failed: ${e.message}`);
+    }
+  }
+  return items.slice(0, cfg.maxTotalItems);
+}
+
+// ----------------------------------------------------------------------- prompt
+function buildPrompt(research, recentTitles) {
+  const researchBlock = research.length
+    ? research
+        .map((r) => `- [${r.source}] ${r.title}${r.snippet ? ` — ${r.snippet}` : ""}`)
+        .join("\n")
+    : "(no fresh material could be fetched today — write from your own expertise)";
   const recent = recentTitles.length
     ? recentTitles.map((t) => "- " + t).join("\n")
     : "- (none yet)";
-  return `${SYSTEM}
 
-Write ONE complete blog post for my blog "Growth Lessons".
+  return `${workflow}
 
-Do NOT overlap with these recent posts:
+## Research material (recent items from my sources — use as background; pick your own angle)
+${researchBlock}
+
+## My recent posts (do NOT repeat these angles)
 ${recent}
 
-Requirements:
-- Choose a fresh, specific, genuinely useful topic in my niche.
-- 700-1000 words.
-- Body in Markdown: use ## subheadings, short paragraphs, and bullet lists where useful.
-- Actionable, with at least one concrete example or mini-framework.
-- Do NOT invent statistics, numbers, or fake case studies. Keep claims honest and general.
-
+## Output
 Respond with ONLY a valid JSON object (no markdown fences) in exactly this shape:
 {"title": "...", "excerpt": "one-sentence summary, max 160 chars", "content": "full post body in markdown"}`;
 }
 
-function slugify(s) {
-  return s
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
-    .slice(0, 60)
-    .replace(/^-|-$/g, "");
-}
-
+// -------------------------------------------------------------------- providers
 function extractJson(text) {
   let t = text.trim().replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
   const start = t.indexOf("{");
@@ -149,6 +237,18 @@ async function generate(prompt) {
   throw new Error("All configured providers failed");
 }
 
+// ------------------------------------------------------------------- publishing
+function slugify(s) {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 60)
+    .replace(/^-|-$/g, "");
+}
+
 async function resolveAuthor() {
   if (AUTHOR_ID) return AUTHOR_ID;
   const { data } = await supabase
@@ -174,6 +274,10 @@ async function uniqueSlug(base) {
 }
 
 async function main() {
+  console.log("Fetching research from your sources…");
+  const research = await fetchResearch(sourcesCfg);
+  console.log(`Collected ${research.length} item(s).`);
+
   const { data: recent } = await supabase
     .from("posts")
     .select("title")
@@ -181,7 +285,7 @@ async function main() {
     .limit(20);
   const recentTitles = (recent || []).map((r) => r.title);
 
-  const raw = await generate(buildPrompt(recentTitles));
+  const raw = await generate(buildPrompt(research, recentTitles));
   const post = extractJson(raw);
   if (!post.title || !post.content)
     throw new Error("Model output missing title or content");
