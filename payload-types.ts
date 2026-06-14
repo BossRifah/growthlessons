@@ -135,6 +135,10 @@ export interface Post {
    */
   excerpt?: string | null;
   coverImage?: (number | null) | Media;
+  /**
+   * Optional direct image URL (used if no cover image is uploaded).
+   */
+  coverUrl?: string | null;
   publishedAt?: string | null;
   content?: {
     root: {
@@ -290,6 +294,7 @@ export interface PostsSelect<T extends boolean = true> {
   slug?: T;
   excerpt?: T;
   coverImage?: T;
+  coverUrl?: T;
   publishedAt?: T;
   content?: T;
   updatedAt?: T;

@@ -65,6 +65,15 @@ export const Posts: CollectionConfig = {
       admin: { position: "sidebar" },
     },
     {
+      name: "coverUrl",
+      type: "text",
+      admin: {
+        position: "sidebar",
+        description:
+          "Optional direct image URL (used if no cover image is uploaded).",
+      },
+    },
+    {
       name: "publishedAt",
       type: "date",
       admin: {
@@ -144,6 +153,7 @@ export const Posts: CollectionConfig = {
             title,
             slug: body.slug ? slugify(String(body.slug)) : undefined,
             excerpt: String(body.excerpt || "").slice(0, 200),
+            coverUrl: body.coverUrl ? String(body.coverUrl) : undefined,
             content,
             _status: publish ? "published" : "draft",
             publishedAt,

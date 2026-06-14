@@ -1,0 +1,30 @@
+name: Publish a post
+
+# Publishes a written Markdown file (from content/posts/) to the live site.
+on:
+  workflow_dispatch:
+    inputs:
+      file:
+        description: "Path to the Markdown file to publish"
+        required: true
+        default: "content/posts/what-is-llms-txt-aeo-llm-visibility.md"
+      publish:
+        description: "Publish live (true) or save as draft (false)"
+        required: true
+        default: "true"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Publish the file
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+          INGEST_SECRET: ${{ secrets.INGEST_SECRET }}
+          FILE: ${{ github.event.inputs.file }}
+          PUBLISH: ${{ github.event.inputs.publish }}
+        run: node scripts/publish-file.mjs
