@@ -8,6 +8,9 @@ export const metadata = {
     "Marketing, content, and SEO lessons from a content-led growth marketer " +
     "with 6+ years scaling B2B startups. Learn to grow traffic, LLM " +
     "visibility, and leads.",
+  verification: {
+    google: "i1bIklXkLFVOFGYPE77oCeDJ2wpOH_Fpg7E4F-ltKkU",
+  },
 };
 
 export default function RootLayout({ children }) {
