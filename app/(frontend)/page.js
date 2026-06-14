@@ -144,9 +144,8 @@ export default async function HomePage() {
 
           {posts.length === 0 ? (
             <div className="empty">
-              No published posts yet. Add one in your Supabase{" "}
-              <strong>Table Editor → posts</strong> (set <code>published</code>{" "}
-              to true) and it will appear here.
+              No published posts yet. Create one in the{" "}
+              <strong>admin at /admin</strong> and publish it to see it here.
             </div>
           ) : (
             <>

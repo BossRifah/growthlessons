@@ -6,44 +6,39 @@
 //   3. Read recent post titles (to avoid repeats)
 //   4. Ask Gemini to write a post that follows your brief and uses the material
 //      (falls back to Groq if Gemini fails or is rate-limited)
-//   5. Insert it into Supabase
+//   5. Send it to the Payload CMS ingest endpoint (which converts the Markdown
+//      to Lexical and creates the post)
 //
 // Run from GitHub Actions (.github/workflows/daily-post.yml) or locally:
 //   node --env-file=.env.automation scripts/generate-post.mjs
 //
-// Required env: SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_URL),
-//   SUPABASE_SERVICE_ROLE_KEY, and at least one of GEMINI_API_KEY / GROQ_API_KEY.
-// Optional env: AUTHOR_ID, PUBLISH ("false" = save draft instead of publishing).
+// Required env: SITE_URL (the deployed site, e.g. https://growthlessons.com),
+//   INGEST_SECRET (must match the value set on the site), and at least one of
+//   GEMINI_API_KEY / GROQ_API_KEY.
+// Optional env: PUBLISH ("false" = save draft instead of publishing).
 
 import { readFileSync } from "fs";
-import { createClient } from "@supabase/supabase-js";
 import Parser from "rss-parser";
 
 const {
-  SUPABASE_URL,
-  NEXT_PUBLIC_SUPABASE_URL,
-  SUPABASE_SERVICE_ROLE_KEY,
+  SITE_URL,
+  INGEST_SECRET,
   GEMINI_API_KEY,
   GROQ_API_KEY,
-  AUTHOR_ID,
   PUBLISH = "true",
 } = process.env;
 
-const supabaseUrl = SUPABASE_URL || NEXT_PUBLIC_SUPABASE_URL;
+const siteUrl = (SITE_URL || "").replace(/\/$/, "");
 
 function fail(msg) {
   console.error("✖ " + msg);
   process.exit(1);
 }
 
-if (!supabaseUrl) fail("Missing SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_URL)");
-if (!SUPABASE_SERVICE_ROLE_KEY) fail("Missing SUPABASE_SERVICE_ROLE_KEY");
+if (!siteUrl) fail("Missing SITE_URL (the deployed site URL)");
+if (!INGEST_SECRET) fail("Missing INGEST_SECRET");
 if (!GEMINI_API_KEY && !GROQ_API_KEY)
   fail("Need at least one of GEMINI_API_KEY or GROQ_API_KEY");
-
-const supabase = createClient(supabaseUrl, SUPABASE_SERVICE_ROLE_KEY, {
-  auth: { persistSession: false },
-});
 
 const UA = "growthlessons-bot/1.0 (+https://github.com/BossRifah/growthlessons)";
 const SYSTEM =
@@ -282,28 +277,41 @@ function slugify(s) {
     .replace(/^-|-$/g, "");
 }
 
-async function resolveAuthor() {
-  if (AUTHOR_ID) return AUTHOR_ID;
-  const { data } = await supabase
-    .from("profiles")
-    .select("id")
-    .limit(1)
-    .maybeSingle();
-  return data?.id || null;
+// Read recent published titles from Payload's public REST API so the writer can
+// avoid repeating angles. Failure here is non-fatal — we just skip the hint.
+async function recentTitles() {
+  try {
+    const res = await fetchWithTimeout(
+      `${siteUrl}/api/posts?limit=20&sort=-createdAt&depth=0`,
+      9000
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data?.docs || []).map((d) => d.title).filter(Boolean);
+  } catch (e) {
+    console.warn("  Could not fetch recent titles: " + e.message);
+    return [];
+  }
 }
 
-async function uniqueSlug(base) {
-  let slug = base;
-  for (let i = 0; i < 5; i++) {
-    const { data } = await supabase
-      .from("posts")
-      .select("id")
-      .eq("slug", slug)
-      .maybeSingle();
-    if (!data) return slug;
-    slug = `${base}-${i + 2}`;
-  }
-  return `${base}-${Date.now()}`;
+async function ingest(post, publish) {
+  const date = new Date().toISOString().slice(0, 10);
+  const res = await fetch(`${siteUrl}/api/posts/ingest`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-ingest-secret": INGEST_SECRET,
+    },
+    body: JSON.stringify({
+      title: post.title.trim(),
+      slug: `${slugify(post.title)}-${date}`,
+      excerpt: (post.excerpt || "").trim().slice(0, 200),
+      markdown: post.content.trim(),
+      publish,
+    }),
+  });
+  if (!res.ok) throw new Error(`Ingest HTTP ${res.status}: ${await res.text()}`);
+  return res.json();
 }
 
 async function main() {
@@ -311,46 +319,18 @@ async function main() {
   const research = await fetchResearch(sourcesCfg);
   console.log(`Collected ${research.length} item(s).`);
 
-  const { data: recent } = await supabase
-    .from("posts")
-    .select("title")
-    .order("created_at", { ascending: false })
-    .limit(20);
-  const recentTitles = (recent || []).map((r) => r.title);
+  const recent = await recentTitles();
 
-  const raw = await generate(buildPrompt(research, recentTitles));
+  const raw = await generate(buildPrompt(research, recent));
   const post = extractJson(raw);
   if (!post.title || !post.content)
     throw new Error("Model output missing title or content");
 
-  const date = new Date().toISOString().slice(0, 10);
-  const slug = await uniqueSlug(`${slugify(post.title)}-${date}`);
   const publish = PUBLISH !== "false";
+  const result = await ingest(post, publish);
 
-  const row = {
-    title: post.title.trim(),
-    slug,
-    excerpt: (post.excerpt || "").trim().slice(0, 200),
-    content: post.content.trim(),
-    published: publish,
-    published_at: publish ? new Date().toISOString() : null,
-  };
-
-  // Only set author_id when we actually have one. Sending an explicit null
-  // makes PostgREST require the column to exist; omitting it lets the post
-  // publish with no author (the website doesn't use author_id).
-  const authorId = await resolveAuthor();
-  if (authorId) row.author_id = authorId;
-
-  const { data, error } = await supabase
-    .from("posts")
-    .insert(row)
-    .select("id, slug")
-    .single();
-  if (error) throw new Error("Supabase insert failed: " + error.message);
-
-  console.log(`✓ ${publish ? "Published" : "Saved draft"}: "${row.title}"`);
-  console.log(`  id=${data.id}  slug=${data.slug}`);
+  console.log(`✓ ${publish ? "Published" : "Saved draft"}: "${post.title.trim()}"`);
+  console.log(`  id=${result.id}  slug=${result.slug}`);
 }
 
 main().catch((e) => {

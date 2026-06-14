@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import { RichText } from "@payloadcms/richtext-lexical/react";
 import { getPostBySlug, formatDate } from "@/lib/posts";
 
 export const dynamic = "force-dynamic";
@@ -46,9 +45,7 @@ export default async function PostPage({ params }) {
         )}
 
         <div className="post-content">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {post.content}
-          </ReactMarkdown>
+          {post.content && <RichText data={post.content} />}
         </div>
       </article>
     </div>
