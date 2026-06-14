@@ -2,9 +2,12 @@
   "name": "growthlessons",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "vercel-build": "npm run db:init && next build",
+    "db:init": "node --import tsx/esm scripts/db-init.mjs",
     "start": "next start",
     "lint": "next lint",
     "generate": "node scripts/generate-post.mjs",
@@ -34,6 +37,7 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "sass": "^1.101.0",
+    "tsx": "^4.22.4",
     "typescript": "^5.7.3"
   }
 }

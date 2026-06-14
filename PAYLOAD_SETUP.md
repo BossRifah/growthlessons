@@ -31,20 +31,26 @@ by the site but do no harm.
 > **Important:** use the **pooler** connection string (port 6543) on Vercel, not
 > the direct connection, or you'll exhaust connections on serverless.
 
-## 2. Create the database tables
+## 2. Create the database tables (automatic)
 
-Payload manages its own schema. After the env vars are set, run migrations once.
-Easiest is locally against the same database:
+You do **not** need to run any commands for this. The repo defines a
+`vercel-build` script that Vercel runs automatically instead of the normal
+build:
 
-```bash
-# with .env.local filled in (PAYLOAD_SECRET + DATABASE_URI)
-npm install
-npx payload migrate:create   # generates the initial migration
-npx payload migrate          # applies it to the `payload` schema
+```
+vercel-build = npm run db:init && next build
 ```
 
-(Alternatively, set `push: true` on the postgres adapter for a first run to
-auto-create tables, then switch back. Migrations are the safer path.)
+`db:init` (scripts/db-init.mjs) connects with your `DATABASE_URI` and pushes the
+Payload schema into the `payload` Postgres schema, creating the tables on the
+first deploy. It is idempotent, so it is a quick no-op on later deploys.
+
+Just **redeploy** after setting the env vars (step 1). Watch the build log for
+`✓ Payload schema synced to the database.`
+
+> If you ever prefer formal migrations instead of auto-push, you can switch the
+> build command back to `next build` and run `npx payload migrate:create` /
+> `npx payload migrate` locally with Node 20. For this blog, auto-push is fine.
 
 ## 3. Create your first admin user
 
