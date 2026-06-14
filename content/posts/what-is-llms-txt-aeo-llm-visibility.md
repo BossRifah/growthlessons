@@ -35,22 +35,11 @@ Let's dig in.
 
 An **llms.txt** file is a plain-text document you place at the root of your website to help AI systems understand what your site is about and where your most important content lives. Think of it as a curated reading list you create for AI models. Instead of forcing a large language model to crawl every page, you hand it a short, organized map and say: here are the pages that actually matter, and here is what this site does.
 
-The file lives at `https://yourwebsite.com/llms.txt`. It is written in Markdown, a lightweight text format that both humans and machines read easily. A basic file looks like this:
+The file lives at `https://yourwebsite.com/llms.txt`. It is written in Markdown, a lightweight text format that both humans and machines read easily. A basic file is just a few labeled sections:
 
-```
-# Your Brand Name
-
-> One sentence that explains what this site or product does.
-
-## Documentation
-- Getting Started: https://yoursite.com/docs/start
-- API Reference: https://yoursite.com/docs/api
-
-## Resources
-- Pricing: https://yoursite.com/pricing
-- FAQ: https://yoursite.com/faq
-- Case Studies: https://yoursite.com/case-studies
-```
+- A top-level `# Your Brand Name` heading, followed by a one-line `>` summary of what the site does.
+- A `## Documentation` section linking your Getting Started and API Reference pages.
+- A `## Resources` section linking Pricing, FAQ, and Case Studies.
 
 Simple, right? It is low-effort, human-readable, and designed to reduce the work AI systems do when figuring out what your site is about.
 
