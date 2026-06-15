@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "vercel-build": "npm run db:init && next build",
+    "vercel-build": "npm run db:init || true && next build",
     "db:init": "node --import tsx/esm scripts/db-init.mjs",
     "start": "next start",
     "lint": "next lint",
