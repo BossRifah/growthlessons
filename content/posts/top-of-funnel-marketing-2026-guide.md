@@ -1,6 +1,6 @@
 ---
 title: Top of Funnel Marketing: The Complete 2026 Guide (10 Proven Tactics + Examples)
-slug: top-of-funnel-marketing-2026-guide
+slug: top-of-funnel-marketing-guide
 excerpt: What is top of funnel marketing? Learn 10 proven TOFU tactics, key metrics, and AI search optimization for B2B and B2C marketers. A complete 2026 guide.
 coverUrl: /covers/tofu.svg
 ---
