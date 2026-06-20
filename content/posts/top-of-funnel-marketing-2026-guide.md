@@ -5,7 +5,7 @@ excerpt: What is top of funnel marketing? Learn 10 proven TOFU tactics, key metr
 coverUrl: /covers/tofu.svg
 ---
 
-**Top of funnel marketing** is everything you do to attract people at the very beginning of their buying journey, before they are looking for a solution or even know one exists. It covers the awareness stage: educating, building trust, and getting your brand discovered, rather than selling. This is a complete guide to top of funnel marketing in 2026, covering 10 proven tactics, real examples, measurement frameworks, and the emerging role of AI search.
+### Top of funnel marketing is everything you do to attract people at the very beginning of their buying journey, before they are looking for a solution or even know one exists. It covers the awareness stage: educating, building trust, and getting your brand discovered, rather than selling. This is a complete guide to top of funnel marketing in 2026, covering 10 proven tactics, real examples, measurement frameworks, and the emerging role of AI search.
 
 In 2022, I almost lost my job as a demand generation manager. I was running content for a B2B SaaS startup, writing nothing but bottom-of-funnel pieces: product comparisons, "why choose us" pages, pricing guides. It worked for a while, then traffic flatlined. The same 2,000 people visited every month, and we had already converted most of them. My pipeline dried up.
 
