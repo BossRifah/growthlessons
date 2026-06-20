@@ -1,5 +1,5 @@
 ---
-title: Top of Funnel Marketing: The Complete 2026 Guide (10 Proven Tactics + Examples)
+title: "What is Top of Funnel Marketing: Best Practices + Examples (2026 Guide)"
 slug: top-of-funnel-marketing-guide
 excerpt: What is top of funnel marketing? Learn 10 proven TOFU tactics, key metrics, and AI search optimization for B2B and B2C marketers. A complete 2026 guide.
 coverUrl: /covers/tofu.svg
@@ -82,7 +82,7 @@ Focus on informational-intent queries: how-to articles, beginner guides, trend a
 
 **Answer Engine Optimization (AEO)** is the practice of structuring content so AI search tools like **ChatGPT**, **Perplexity**, **Google Gemini**, and **Microsoft Copilot** can find, summarize, and cite it. Unlike traditional SEO, which targets a list of links, AEO earns citations and answer placements inside AI responses. This is the tactic most marketers are still ignoring, and one of the biggest TOFU opportunities of 2026.
 
-It matters because AI is becoming a primary discovery channel: ChatGPT now has over 900 million weekly active users (Contently, 2026). Most companies have not optimized for AEO at all, so early movers gain a real advantage, much like SEO in 2010. To optimize: lead with clear, direct definitions in the first 100 words; use FAQ and HowTo **schema markup**; include specific statistics with named sources; create comparison tables and structured lists that AI can parse; and consider an **llms.txt** file to tell AI crawlers what your site is about. (I wrote a full breakdown of that in [What is an llms.txt file?](/blog/what-is-llms-txt-aeo-llm-visibility).)
+It matters because AI is becoming a primary discovery channel: ChatGPT now has over 900 million weekly active users (Contently, 2026). Most companies have not optimized for AEO at all, so early movers gain a real advantage, much like SEO in 2010. To optimize: lead with clear, direct definitions in the first 100 words; use FAQ and HowTo **schema markup**; include specific statistics with named sources; create comparison tables and structured lists that AI can parse; and consider adding an **llms.txt** file, a plain-text map that tells AI crawlers what your site is about and which pages matter most. If you are weighing whether that last one is worth the effort, I broke down exactly what it does, how to build one, and where it sits in your AEO priority stack in my guide to [what an llms.txt file is and whether you actually need it](/blog/what-is-llms-txt-aeo-llm-visibility).
 
 To track AI referral traffic in **GA4**, create a Free Form exploration, add "Landing page + query string" and "Source / medium" as dimensions and "Sessions" as the metric, then filter Source/medium with the regex `(chatgpt|perplexity|claude|copilot|ai|notebook|gemini)`. This shows exactly which pages earn AI traffic and whether it is growing month over month.
 
