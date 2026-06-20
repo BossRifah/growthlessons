@@ -132,35 +132,71 @@ export const Posts: CollectionConfig = {
           );
         }
 
-        const editorConfig = await editorConfigFactory.default({
-          config: req.payload.config,
-        });
-        const content = convertMarkdownToLexical({ editorConfig, markdown });
+        try {
+          const editorConfig = await editorConfigFactory.default({
+            config: req.payload.config,
+          });
+          const content = convertMarkdownToLexical({ editorConfig, markdown });
 
-        const publish = body.publish !== false;
-        // Allow callers (e.g. the one-off migration) to preserve an original
-        // publish date; otherwise stamp now when publishing.
-        const publishedAt = body.publishedAt
-          ? new Date(body.publishedAt).toISOString()
-          : publish
-            ? new Date().toISOString()
-            : undefined;
-        const doc = await req.payload.create({
-          collection: "posts",
-          overrideAccess: true,
-          draft: !publish,
-          data: {
+          const publish = body.publish !== false;
+          const slug = body.slug
+            ? slugify(String(body.slug))
+            : slugify(title);
+
+          // Look for an existing post with this slug so re-publishing the same
+          // file updates it instead of failing on the unique-slug constraint.
+          const existing = await req.payload.find({
+            collection: "posts",
+            where: { slug: { equals: slug } },
+            limit: 1,
+            depth: 0,
+            overrideAccess: true,
+          });
+          const current = existing.docs?.[0];
+
+          const publishedAt = body.publishedAt
+            ? new Date(body.publishedAt).toISOString()
+            : publish
+              ? current?.publishedAt || new Date().toISOString()
+              : undefined;
+
+          const data: any = {
             title,
-            slug: body.slug ? slugify(String(body.slug)) : undefined,
+            slug,
             excerpt: String(body.excerpt || "").slice(0, 200),
             coverUrl: body.coverUrl ? String(body.coverUrl) : undefined,
             content,
             _status: publish ? "published" : "draft",
             publishedAt,
-          },
-        });
+          };
 
-        return Response.json({ id: doc.id, slug: doc.slug });
+          const doc = current
+            ? await req.payload.update({
+                collection: "posts",
+                id: current.id,
+                draft: !publish,
+                overrideAccess: true,
+                data,
+              })
+            : await req.payload.create({
+                collection: "posts",
+                draft: !publish,
+                overrideAccess: true,
+                data,
+              });
+
+          return Response.json({
+            id: doc.id,
+            slug: doc.slug,
+            updated: Boolean(current),
+          });
+        } catch (err: any) {
+          // Surface the real reason so it shows up in the publish workflow log.
+          return Response.json(
+            { error: err?.message || "ingest failed" },
+            { status: 500 }
+          );
+        }
       },
     },
   ],
