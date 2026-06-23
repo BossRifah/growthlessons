@@ -12,6 +12,7 @@
     "lint": "next lint",
     "generate": "node scripts/generate-post.mjs",
     "migrate:from-supabase": "node scripts/migrate-from-supabase.mjs",
+    "delete:posts": "node scripts/delete-posts.mjs",
     "payload": "payload",
     "payload:types": "payload generate:types",
     "payload:importmap": "payload generate:importmap"

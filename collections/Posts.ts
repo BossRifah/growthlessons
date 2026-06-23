@@ -199,5 +199,43 @@ export const Posts: CollectionConfig = {
         }
       },
     },
+    {
+      // POST /api/posts/purge — deletes posts by slug. Body: { slugs: [...] }.
+      path: "/purge",
+      method: "post",
+      handler: async (req) => {
+        const secret = req.headers.get("x-ingest-secret");
+        const authorized =
+          Boolean(req.user) ||
+          (process.env.INGEST_SECRET && secret === process.env.INGEST_SECRET);
+        if (!authorized) {
+          return Response.json({ error: "unauthorized" }, { status: 401 });
+        }
+
+        await addDataAndFileToRequest(req);
+        const body: any = req.data || {};
+        const slugs: string[] = Array.isArray(body.slugs)
+          ? body.slugs.map((s: any) => String(s).trim()).filter(Boolean)
+          : [];
+        if (!slugs.length) {
+          return Response.json({ error: "slugs array is required" }, { status: 400 });
+        }
+
+        try {
+          const result = await req.payload.delete({
+            collection: "posts",
+            where: { slug: { in: slugs } },
+            overrideAccess: true,
+          });
+          const deleted = (result?.docs || []).map((d: any) => d.slug);
+          return Response.json({ deleted, count: deleted.length });
+        } catch (err: any) {
+          return Response.json(
+            { error: err?.message || "purge failed" },
+            { status: 500 }
+          );
+        }
+      },
+    },
   ],
 };

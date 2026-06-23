@@ -1,0 +1,25 @@
+name: Delete posts
+
+# Deletes posts by slug (comma-separated). Defaults to the 3 migrated originals.
+on:
+  workflow_dispatch:
+    inputs:
+      slugs:
+        description: "Comma-separated slugs to delete"
+        required: true
+        default: "intelligent-content-for-compounding-growth,grow-your-presence-in-search-and-answer-engines,unlocking-b2b-saas-growth-through-strategic-content-repurpos-2026-06-1"
+
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Delete posts
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+          INGEST_SECRET: ${{ secrets.INGEST_SECRET }}
+          SLUGS: ${{ github.event.inputs.slugs }}
+        run: node scripts/delete-posts.mjs
