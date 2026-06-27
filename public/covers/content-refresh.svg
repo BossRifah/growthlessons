@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="Animated content refresh cover">
+  <defs>
+    <linearGradient id="bg4" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6f5f3"/>
+      <stop offset="1" stop-color="#eceae6"/>
+    </linearGradient>
+    <filter id="soft4" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#16130f" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg4)"/>
+
+  <!-- drifting accent blobs -->
+  <g opacity="0.16">
+    <circle cx="150" cy="140" r="90" fill="#2f8f5b">
+      <animate attributeName="cy" values="140;168;140" dur="9s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1075" cy="500" r="118" fill="#6b46ff">
+      <animate attributeName="cy" values="500;472;500" dur="11s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1095" cy="130" r="52" fill="#ff6a35">
+      <animate attributeName="r" values="52;62;52" dur="6s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- rising freshness chart with a refresh arrow -->
+  <g filter="url(#soft4)" transform="translate(660,150)">
+    <rect x="0" y="0" width="430" height="320" rx="20" fill="#ffffff" stroke="#e4e1dc" stroke-width="2"/>
+
+    <!-- decaying line (fades) -->
+    <path d="M40 90 L130 130 L220 180 L310 235 L390 270" fill="none" stroke="#c9c4bd" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 10">
+      <animate attributeName="opacity" values="0.8;0.3;0.8" dur="4s" repeatCount="indefinite"/>
+    </path>
+
+    <!-- refreshed line (rises) -->
+    <path d="M40 260 L130 215 L220 165 L310 110 L390 60" fill="none" stroke="#2f8f5b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="520" stroke-dashoffset="520">
+      <animate attributeName="stroke-dashoffset" values="520;0;0;520" keyTimes="0;0.5;0.85;1" dur="4s" repeatCount="indefinite"/>
+    </path>
+    <circle cx="390" cy="60" r="8" fill="#2f8f5b">
+      <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.45;0.5;0.85;1" dur="4s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- circular refresh icon -->
+    <g transform="translate(360,250)">
+      <path d="M0 -22 A22 22 0 1 1 -18 12" fill="none" stroke="#6b46ff" stroke-width="5" stroke-linecap="round">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="3s" repeatCount="indefinite"/>
+      </path>
+      <path d="M0 -22 L-9 -30 M0 -22 L9 -14" fill="none" stroke="#6b46ff" stroke-width="5" stroke-linecap="round">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="3s" repeatCount="indefinite"/>
+      </path>
+    </g>
+  </g>
+
+  <!-- title -->
+  <text x="120" y="300" font-family="Georgia, 'Times New Roman', serif" font-size="56" fill="#16130f">Content</text>
+  <text x="120" y="362" font-family="Georgia, 'Times New Roman', serif" font-size="56" fill="#2f8f5b">refresh</text>
+  <text x="122" y="412" font-family="-apple-system, Segoe UI, Roboto, sans-serif" font-size="22" fill="#6b6660">For SEO &amp; AI visibility, a 2026 playbook</text>
+</svg>
