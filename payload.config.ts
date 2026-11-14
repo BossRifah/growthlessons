@@ -1,6 +1,6 @@
 import { postgresAdapter } from "@payloadcms/db-postgres";
-import { lexicalEditor } from "@payloadcms/richtext-lexical";
-import { s3Storage } from "@payloadcms/storage-s3";
+import { EXPERIMENTAL_TableFeature, lexicalEditor } from "@payloadcms/richtext-lexical";
+import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import path from "path";
 import { buildConfig } from "payload";
 import { fileURLToPath } from "url";
@@ -22,7 +22,9 @@ export default buildConfig({
     },
   },
   collections: [Posts, Media, Users],
-  editor: lexicalEditor(),
+  editor: lexicalEditor({
+    features: ({ defaultFeatures }) => [...defaultFeatures, EXPERIMENTAL_TableFeature()],
+  }),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),
@@ -35,19 +37,10 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
-    // Store uploaded media in Supabase Storage (S3-compatible).
-    s3Storage({
+    vercelBlobStorage({
       collections: { media: true },
-      bucket: process.env.S3_BUCKET || "",
-      config: {
-        forcePathStyle: true,
-        region: process.env.S3_REGION || "us-east-1",
-        endpoint: process.env.S3_ENDPOINT || undefined,
-        credentials: {
-          accessKeyId: process.env.S3_ACCESS_KEY_ID || "",
-          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || "",
-        },
-      },
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+      alwaysInsertFields: true,
     }),
   ],
 });

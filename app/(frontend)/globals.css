@@ -584,7 +584,11 @@ a {
 }
 .post-content img {
   max-width: 100%;
+  height: auto;
   border-radius: var(--radius);
+}
+.post-content .lexical-table-container {
+  overflow-x: auto;
 }
 .post-content table {
   width: 100%;

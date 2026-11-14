@@ -41,7 +41,7 @@ export default async function PostPage({ params }) {
 
         {post.cover_url && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img className="cover" src={post.cover_url} alt={post.title} />
+          <img className="cover" src={post.cover_url} alt={post.cover_alt} />
         )}
 
         <div className="post-content">
