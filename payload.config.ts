@@ -13,6 +13,16 @@ import { Posts } from "./collections/Posts";
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
+const databaseUri = process.env.DATABASE_URI || "";
+let runtimeDatabaseUri = databaseUri;
+if (process.env.VERCEL === "1" && process.env.NODE_ENV === "production" && databaseUri) {
+  const url = new URL(databaseUri);
+  if (url.hostname.endsWith(".pooler.supabase.com") && url.port === "5432") {
+    url.port = "6543";
+    runtimeDatabaseUri = url.toString();
+  }
+}
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -32,7 +42,7 @@ export default buildConfig({
   db: postgresAdapter({
     // Keep serverless instances from reserving the session pool's connections.
     pool: {
-      connectionString: process.env.DATABASE_URI || "",
+      connectionString: runtimeDatabaseUri,
       max: 2,
       idleTimeoutMillis: 2_000,
     },
