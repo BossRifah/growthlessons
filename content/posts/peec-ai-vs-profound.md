@@ -48,12 +48,12 @@ I’d start with questions your buyers ask when they shortlist, compare, and val
 
 Peec’s US dollar brand pricing page lists three monthly plans and a custom Enterprise option. The three public tiers each list a choice of three models and unlimited users. Starter includes CSV exports, Pro adds API access, and Advanced adds a Looker Studio connector. [Peec AI brand pricing](https://peec.ai/pricing)
 
-| Peec plan | Monthly price | Tracked prompts | Projects | One extra model per month |
+| Peec plan | Price and billing | Tracked prompts | Projects | One extra model per month |
 |---|---:|---:|---:|---:|
-| Starter | $95 | 50 | 1 | $30 |
-| Pro | $245 | 150 | 2 | $70 |
-| Advanced | $495 | 350 | 5 | $140 |
-| Enterprise | Custom annual | Custom | Unlimited | Ask for the quoted coverage |
+| Starter | $95/month | 50 | 1 | $30 |
+| Pro | $245/month | 150 | 2 | $70 |
+| Advanced | $495/month | 350 | 5 | $140 |
+| Enterprise | Custom, billed annually | Custom | Unlimited | Ask for the quoted coverage |
 
 If you need a fourth eligible model on Starter, the listed base price and add-on total $125 per month. Peec’s own example counts 50 prompts across three models over 30 days as 4,500 answers. Those answers are repeated observations, so compare prompt coverage and collection frequency separately when you look at alternatives. [Peec AI plan details and add-ons](https://peec.ai/pricing)
 
@@ -81,7 +81,7 @@ If you already have useful questions in sales notes and support tickets, start t
 
 ### Turn a citation into work someone can own
 
-Peec’s Actions suggests improvements based on visibility data, and its Agent can investigate results and help act on them. Profound offers reusable Agents and a Context Manager that supplies brand knowledge. Ask each vendor to take a real citation gap and turn it into a brief that a writer or PR lead could use. Judge the quality of the evidence and the edits your team would need to make. [Peec Agent](https://peec.ai/product/agent) · [Profound plans and agent features](https://www.tryprofound.com/pricing)
+Peec’s Actions feature suggests improvements based on visibility data, and its Agent can investigate results and help act on them. Profound offers reusable Agents and a Context Manager that supplies brand knowledge. Ask each vendor to take a real citation gap and turn it into a brief that a writer or PR lead could use. Judge the quality of the evidence and the edits your team would need to make. [Peec Agent](https://peec.ai/product/agent) · [Profound plans and agent features](https://www.tryprofound.com/pricing)
 
 I’d give the evaluator a simple assignment. Find a buyer question where a competitor appears, open the answer and sources, and propose a change to one existing page. If the brief calls for outreach, check that it points to a relevant publication and gives a reason that a reader would benefit. [Growth Lessons content refresh guide](https://growthlessons.vercel.app/blog/content-refresh-seo-ai-visibility)
 
