@@ -2,7 +2,7 @@
 title: Peec AI vs. Profound: Which AI Search Tool Should You Buy?
 slug: peec-ai-vs-profound
 excerpt: Compare Peec AI vs. Profound on pricing, AI visibility, citations, and agent workflows. Use a seven-day pilot to choose the right tool for your team.
-coverUrl: https://growthlessons.vercel.app/api/media/file/peec-ai-vs-profound-hero.png
+coverImage: 13
 ---
 
 I’d start with **Peec AI** if your team wants to track a defined set of buyer questions, see where competitors appear, and share results on a published monthly plan. I’d evaluate **Profound** if you also need to research what people ask AI engines and use those insights in recurring marketing workflows.
