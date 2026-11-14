@@ -61,6 +61,7 @@ async function main() {
       slug: meta.slug || undefined,
       excerpt: meta.excerpt || "",
       coverUrl: meta.coverUrl || undefined,
+      coverImage: meta.coverImage ? Number(meta.coverImage) : undefined,
       markdown: body,
       publish,
     }),
