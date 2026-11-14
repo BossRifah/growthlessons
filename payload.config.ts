@@ -30,7 +30,12 @@ export default buildConfig({
     outputFile: path.resolve(dirname, "payload-types.ts"),
   },
   db: postgresAdapter({
-    pool: { connectionString: process.env.DATABASE_URI || "" },
+    // Keep serverless instances from reserving the session pool's connections.
+    pool: {
+      connectionString: process.env.DATABASE_URI || "",
+      max: 2,
+      idleTimeoutMillis: 2_000,
+    },
     // Keep Payload's tables in their own Postgres schema so they never clash
     // with the project's original public.* tables (posts, profiles, etc.).
     schemaName: "payload",

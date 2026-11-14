@@ -4,6 +4,7 @@ import {
   convertMarkdownToLexical,
   editorConfigFactory,
 } from "@payloadcms/richtext-lexical";
+import type { RichTextField } from "payload";
 
 function slugify(s: string): string {
   return s
@@ -133,9 +134,14 @@ export const Posts: CollectionConfig = {
         }
 
         try {
-          const editorConfig = await editorConfigFactory.default({
-            config: req.payload.config,
-          });
+          const field = req.payload.collections.posts.config.fields.find(
+            (candidate): candidate is RichTextField =>
+              candidate.type === "richText" && candidate.name === "content",
+          );
+          if (!field) {
+            throw new Error("The post content editor is missing.");
+          }
+          const editorConfig = editorConfigFactory.fromField({ field });
           const content = convertMarkdownToLexical({ editorConfig, markdown });
 
           const publish = body.publish !== false;
