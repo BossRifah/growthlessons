@@ -126,6 +126,10 @@ export const Posts: CollectionConfig = {
 
         const title = String(body.title || "").trim();
         const markdown = String(body.markdown || body.content || "");
+        const coverImage = body.coverImage == null ? undefined : Number(body.coverImage);
+        if (coverImage !== undefined && (!Number.isSafeInteger(coverImage) || coverImage < 1)) {
+          return Response.json({ error: "coverImage must be a positive media ID" }, { status: 400 });
+        }
         if (!title || !markdown) {
           return Response.json(
             { error: "title and markdown are required" },
@@ -170,6 +174,7 @@ export const Posts: CollectionConfig = {
             title,
             slug,
             excerpt: String(body.excerpt || "").slice(0, 200),
+            ...(coverImage === undefined ? {} : { coverImage }),
             coverUrl: body.coverUrl ? String(body.coverUrl) : undefined,
             content,
             _status: publish ? "published" : "draft",

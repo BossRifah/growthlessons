@@ -43,7 +43,7 @@ export default buildConfig({
     // Keep serverless instances from reserving the session pool's connections.
     pool: {
       connectionString: runtimeDatabaseUri,
-      max: 2,
+      max: runtimeDatabaseUri === databaseUri ? 2 : 8,
       idleTimeoutMillis: 2_000,
     },
     // Keep Payload's tables in their own Postgres schema so they never clash
