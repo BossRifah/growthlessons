@@ -118,7 +118,7 @@ New content feels productive, refreshing feels like maintenance, so frame it wel
 
 **Set baselines before refreshing.** Record organic clicks, impressions, average position, CTR, and conversions for the page over the last 30 days. Without baselines, you cannot measure impact.
 
-**Track results at 4, 8, and 12 weeks.** Pull the same metrics and look for higher clicks, better position, improved CTR (especially after title and meta updates), and conversion recovery. Set up a GA4 exploration filtered by `(chatgpt|perplexity|claude|copilot|ai|notebook|gemini)` to track AI referral traffic.
+**Track results at 4, 8, and 12 weeks.** Pull the same metrics and look for higher clicks, better position, improved CTR (especially after title and meta updates), and conversion recovery. Set up a GA4 exploration filtered by `(chatgpt|perplexity|claude|copilot|ai|notebook|gemini)` to track AI referral traffic. To see whether refreshed pages are also appearing as sources in AI answers, use this [Peec AI vs. Profound comparison](https://growthlessons.vercel.app/blog/peec-ai-vs-profound) to evaluate citation tracking.
 
 **Calculate ROI.** Compare gains against time invested. For example, a page going from 1,500 to 2,200 monthly visits after a 3-hour, $225 refresh, valued at $2 per visit, adds roughly $1,400 per month in incremental value, paying for itself in the first week.
 

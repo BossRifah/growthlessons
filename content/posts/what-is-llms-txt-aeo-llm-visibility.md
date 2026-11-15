@@ -81,7 +81,7 @@ These crawlers fetch pages, and that content becomes part of what the AI can ref
 - AI-referred traffic converts 42% better than non-AI traffic in US retail (Adobe, March 2026).
 - AI-referred sessions grew 527% year over year in 2025.
 
-So AI visibility is not a theoretical future thing. It is generating real, high-converting traffic right now. The question is how you get into that **citation authority** pool, and llms.txt is one small piece of a larger puzzle.
+So AI visibility is not a theoretical future thing. It is generating real, high-converting traffic right now. The question is how you get into that **citation authority** pool, and llms.txt is one small piece of a larger puzzle. If you want to measure how often AI answers cite your pages or mention your brand, [compare Peec AI and Profound](https://growthlessons.vercel.app/blog/peec-ai-vs-profound) to see how each tool tracks those signals.
 
 ## What is llms-full.txt?
 
